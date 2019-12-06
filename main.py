@@ -4,11 +4,11 @@ import sys
 import subprocess
 import logging
 import time
-from external_function import directory_scanner
-from external_function import load_distributor
-from external_function import hash_directory
-from external_function import data_structure_builder
-from external_function import md5
+from helper import directory_scanner
+from helper import load_distributor
+from helper import hash_directory
+from helper import data_structure_builder
+from helper import md5
 import os
 
 # How to Run it! 
@@ -26,8 +26,8 @@ comm = MPI.COMM_WORLD
 my_rank = comm.Get_rank()  # rank of the node
 p = comm.Get_size()  # number of assigned nods
 
-print('Number of the CPU assigned')
-print(p)
+#print('Number of the CPU assigned')
+#print(p)
 
 
 
@@ -85,8 +85,8 @@ if my_rank == 0:  # node is master
 
     # ==================================== Master : Directory scanner ================================= #
 
-    print("The source path is  : {path}".format(path=source_dir))
-    print("The destination path is  : {path}".format(path=destination_dir))
+    logger.info("The source path is  : {path}".format(path=source_dir))
+    logger.info("The destination path is  : {path}".format(path=destination_dir))
 
     logger.info("==== Directory scanner : start ====")
     ret_dir_scanner = directory_scanner(source_dir,load_level)
@@ -154,13 +154,13 @@ if my_rank == 0:  # node is master
 
     sys.exit(0)
 
-else:  # node is slave
+else:  # Processor is slave
     
     # ============================================= Slave : Send / Receive ============================================ #
     message_in = comm.recv()
 
-    if message_in is None:  # in case more than number of the dir. processor is assigned todo Tag it!
-        message_out = ('Node', str(my_rank), 'is idle')
+    if message_in is None:  # in case more than number of the dir. processor is assigned !
+        message_out = "Processor : {my_rank} is idle".format(my_rank=my_rank)       
         comm.send(message_out, dest=0)
 
     else: # if the Slave node has joblist to do
@@ -181,6 +181,7 @@ else:  # node is slave
                     # prepare the rsync commoand to be excexuted by the worker node 
                     rsync_str = ("rsync -r " + source_dir + job + "/" + " " + destination_dir + "/" + job)
                     os.system(rsync_str)
+                    message_out_1 = "synching process of  directory : {job}".format(job=job)   
                     if checksum_status == 1:
                         hash_directory(destination_dir,job,current_path,"destination")
                         os.chdir(current_path)
@@ -188,14 +189,14 @@ else:  # node is slave
                         destination_hash_text = "destination"  + "_"+ job +"_hashed.txt" 
                         if md5(source_hash_text) == md5(destination_hash_text):
                             msg_out = 'source: ' + job +' and destination: ' + job +' files are identical' 
-                            print(msg_out)
                             os.remove(source_hash_text)
                             os.remove(destination_hash_text)
 
                         else:
                             msg_out = 'integrity of source: ' + job +' and destination: ' + job +' files could not be verified' 
-                            print(msg_out)
                 else :
+                    
+                    message_out_1 = "Opereation requested on the  directory : {job}".format(job=job)  
                     rsync_str = (" Opereation requested on the " + source_dir + job )
 
 
@@ -233,7 +234,8 @@ else:  # node is slave
 
             # Send : the finish of the sync message back to master node
 
-            message_out = ('Node:', str(my_rank), 'finished :', rsync_str, '\r\n')
+            #message_out = ('Node:', str(my_rank), 'finished :', message_out_1, '\r\n')
+            message_out = "Processor : {my_rank} is finished the {in_message} .".format(my_rank=my_rank,in_message=message_out_1) 
             comm.send(message_out, dest=0)
 
 MPI.Finalize()

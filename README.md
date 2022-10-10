@@ -14,6 +14,6 @@ GCC/11.2.0
 GCCcore/.11.2.0
 ParaStationMPI/5.5.0-1
 GDAL/3.3.2
-ml CDO/2.0.2
+CDO/2.0.2
 ```
 Python packages that are used is mentioned in ```requirments.txt```. 

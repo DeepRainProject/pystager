@@ -1,5 +1,5 @@
 #!/bin/bash -x
-#SBATCH --account=deepacf
+#SBATCH --account=XXX
 #SBATCH --nodes=1
 #SBATCH --gres=gpu:0
 #SBATCH --output=log_out.%j

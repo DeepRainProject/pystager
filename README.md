@@ -1,6 +1,4 @@
 # PyStager
-PyStager is a python wrapper for [mpi4py](https://mpi4py.readthedocs.io/en/stable/) that provides an easy-to-use framework for parallel computation. 
-
 This version of the PyStager is frozen, and no further development will be carried out here. 
 Development of the PyStager is continuing in [Earth System Data Exploration](https://www.fz-juelich.de/en/ias/jsc/about-us/structure/research-groups/esde) in [Jülich Super Computing Centre](https://www.fz-juelich.de/en/ias/jsc) that is available at: https://gitlab.jsc.fz-juelich.de/esde/workflows/pystager
 

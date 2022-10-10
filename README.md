@@ -9,6 +9,7 @@ The code is designed nativly as a wrapper for [mpi4py](https://mpi4py.readthedoc
 
 Source: https://www.fz-juelich.de/
 
+This repository required the following packages:
 ```
 GCC/11.2.0
 GCCcore/.11.2.0
